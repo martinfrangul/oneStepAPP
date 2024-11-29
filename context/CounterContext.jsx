@@ -1,7 +1,7 @@
 import { useState, createContext } from "react";
 import PropTypes from "prop-types";
 import useAsyncStorageState from "../hooks/useAsyncStorageState";
-
+import { COLORS } from "../config/colors";
 const CounterContext = createContext();
 
 const CounterContextProvider = ({ children }) => {
@@ -14,9 +14,9 @@ const CounterContextProvider = ({ children }) => {
   const [soundToggle, setSoundToggle] = useState(false); // Este no necesita persistencia
 
   const modes = {
-    work: { minutes: workMinutes, bgColor: "background-W" },
-    shortBreak: { minutes: SRMinutes, bgColor: "background-SB" },
-    longBreak: { minutes: LRMinutes, bgColor: "background-LB" },
+    work: { minutes: workMinutes, bgColor: COLORS.counterBGW },
+    shortBreak: { minutes: SRMinutes, bgColor: COLORS.counterBGSB  },
+    longBreak: { minutes: LRMinutes, bgColor: COLORS.counterBGLR },
   };
 
   return (

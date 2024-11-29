@@ -1,18 +1,20 @@
 import React from "react";
-import { StyleSheet, ImageBackground, SafeAreaView, View } from "react-native";
+import { StyleSheet, ImageBackground, SafeAreaView, View, StatusBar } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
 import Counter from "./components/Counter";
+import { IMAGES } from "./config/colors";
 
 export default function App() {
   return (
     <CounterContextProvider>
       <ImageBackground
-        source={require("./assets/images/bg-app-lg.jpg")}
+        source={IMAGES.backgroundLG}
         resizeMode="cover"
         style={styles.rootScreen}
         imageStyle={styles.backgroundImage}
       >
+        <StatusBar />
         <SafeAreaView style={styles.safeArea}>
           <Navbar />
           <View style={styles.counterContainer}>
@@ -26,17 +28,17 @@ export default function App() {
 
 const styles = StyleSheet.create({
   rootScreen: {
-    flex: 1, // Ocupa toda la pantalla
+    flex: 1,
   },
   backgroundImage: {
-    opacity: 1, // Opcional: Ajusta la opacidad del fondo
+    opacity: 1,
   },
   safeArea: {
-    flex: 1, // Asegura que todo ocupe el espacio disponible
+    flex: 1, 
   },
   counterContainer: {
-    flex: 1, // Ocupa el espacio restante debajo de la navbar
-    justifyContent: "flex-start", // Asegura que el contenido inicie desde la parte superior
-    alignItems: "center", // Centra horizontalmente el contenido si es necesario
+    flex: 1,
+    justifyContent: "flex-start", 
+    alignItems: "center", 
   },
 });

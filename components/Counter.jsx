@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { CounterContext } from "../context/CounterContext";
+import { BoxShadow } from "react-native-shadow";
+import Icon from "react-native-vector-icons/FontAwesome6";
 
 const Counter = () => {
   const { mode, setMode, counterLap, setCounterLap, modes, initialCounterLap } =
@@ -85,35 +87,45 @@ const Counter = () => {
     return () => clearInterval(intervalId);
   }, [playPause, seconds, minutes, started, mode]);
 
+  // Configuración de la sombra
+  const shadowOpt = {
+    width: 320, // Ancho del contenedor
+    height: 240, // Alto del contenedor
+    color: "#000", // Color de la sombra
+    border: 10, // Grosor del borde de la sombra
+    radius: 16, // Radio de borde
+    opacity: 0.2, // Opacidad de la sombra
+    x: 0, // Desplazamiento horizontal
+    y: 8, // Desplazamiento vertical
+    style: { marginVertical: 10 },
+  };
+
   return (
     <View style={styles.container}>
-      <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
-        <View style={styles.timer}>
-          <Text style={styles.timeText}>
-            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Text>
+      {/* Contenedor de sombra */}
+      <BoxShadow setting={shadowOpt}>
+        {/* Contenedor del contador */}
+        <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
+          <View style={styles.timer}>
+            <Text style={styles.timeText}>
+              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            </Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={onStartHandler}>
+              <Text style={styles.buttonText}>{playPause ?  <Icon name="pause" size={30} color="#fffff" /> :  <Icon name="play" size={30} color="#fffff" />}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onResetHandler}>
+              <Text style={styles.buttonText}>
+              <Icon name="rotate-left" size={30} color="#fffff" />
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onSkipHandler}>
+              <Text style={styles.buttonText}><Icon name="forward-step" size={30} color="#fffff" /></Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onStartHandler}
-          >
-            <Text style={styles.buttonText}>{playPause ? "PAUSE" : "PLAY"}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onResetHandler}
-          >
-            <Text style={styles.buttonText}>RESET</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onSkipHandler}
-          >
-            <Text style={styles.buttonText}>SKIP</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </BoxShadow>
     </View>
   );
 };
@@ -123,19 +135,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    
   },
   counterContainer: {
-    width: "90%",
-    padding: 24,
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
+    width: 320, 
+    height: 240, 
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#d7dbde",
+    borderRadius: 16,
+    padding: 16,
   },
   timer: {
     paddingVertical: 16,
@@ -143,7 +150,7 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 48,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#00000",
   },
   buttonContainer: {
     flexDirection: "row",
