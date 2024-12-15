@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
       margin: 16,
     },
     logo: {
-      width: 80,
-      height: 80, // Adjust as needed
+      width: 110,
+      height: 110, // Adjust as needed
       resizeMode: "contain",
     },
   });
