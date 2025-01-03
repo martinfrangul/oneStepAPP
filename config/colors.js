@@ -7,9 +7,9 @@ export const COLORS = {
     btnControl: "#FDFDAC",
     bgSR: "#D8E6C6",
     bgLR: "#f68986",
-    counterBGW: "rgba(198, 226, 233, 0.7)",
-    counterBGSB: "rgba(200, 246, 201, 0.7)",
-    counterBGLR: "rgba(242, 111, 109, 0.7)",
+    counterBGW: "rgba(198, 226, 233, 0.9)",
+    counterBGSB: "rgba(200, 246, 201, 0.9)",
+    counterBGLR: "rgba(242, 111, 109, 0.9)",
   };
   
   export const IMAGES = {

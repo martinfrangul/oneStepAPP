@@ -1,5 +1,11 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { TasksData } from "../../context/TasksData";
 import Icon from "react-native-vector-icons/Feather";
@@ -8,13 +14,16 @@ const TaskPanel = () => {
   const { tasks, setTasks, setCompletedTasks } = useContext(TasksData);
 
   const completeTask = (id) => {
-    const completedTask = tasks.find(task => task.id === id);
-    setCompletedTasks(prev => [...prev, { ...completedTask, completed: true }]);
-    setTasks(tasks.filter(task => task.id !== id));
+    const completedTask = tasks.find((task) => task.id === id);
+    setCompletedTasks((prev) => [
+      ...prev,
+      { ...completedTask, completed: true },
+    ]);
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
   const deleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
   return (
@@ -24,23 +33,28 @@ const TaskPanel = () => {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Tasks list</Text>
-        <FlatList
-          data={tasks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.taskItem}>
-              <Text style={styles.taskText}>{item.text}</Text>
-              <View style={styles.actionContainer}>
-                <TouchableOpacity onPress={() => completeTask(item.id)}>
-                  <Icon name="check-circle" size={24} color="#4CAF50" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteTask(item.id)}>
-                  <Icon name="trash" size={24} color="#FF5722" />
-                </TouchableOpacity>
+        <View style={styles.separator} />
+        {tasks.length ? (
+          <FlatList
+            data={tasks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.taskItem}>
+                <Text style={styles.taskText}>{item.text}</Text>
+                <View style={styles.actionContainer}>
+                  <TouchableOpacity onPress={() => completeTask(item.id)}>
+                    <Icon name="check-circle" size={24} color="#4CAF50" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteTask(item.id)}>
+                    <Icon name="trash" size={24} color="#FF5722" />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
-        />
+            )}
+          />
+        ) : (
+          <Text style={styles.noTasks}>No tasks yet</Text>
+        )}
       </View>
     </LinearGradient>
   );
@@ -66,6 +80,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: "#155263",
   },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEE",
+    marginVertical: 8,
+  },
   taskItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -78,6 +97,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: "#000",
+  },
+  noTasks: {
+    flex: 1,
+    fontSize: 16,
+    padding: 12,
+    color: "#000",
+    textAlign: "center",
+    fontStyle: "italic"
   },
   actionContainer: {
     flexDirection: "row",

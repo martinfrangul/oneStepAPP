@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
       backgroundColor: "white", // Default background
     },
     buttonActiveWork: {
-      backgroundColor: "#D8D8DD",
+      backgroundColor: "#D8D8FE",
     },
     buttonActiveShortBreak: {
       backgroundColor: "#D8E6C6",
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
       textAlign: "center",
       fontWeight: "600",
       fontSize: 16,
+      fontFamily: "Raleway"
     },
     logoContainer: {
       flex: 1,

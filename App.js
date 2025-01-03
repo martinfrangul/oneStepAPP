@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -8,8 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
@@ -20,6 +18,10 @@ import { IMAGES } from "./config/colors";
 import TaskManager from "./components/tasks/TaskManager";
 import TaskPanel from "./components/tasks/TaskPanel";
 import { TasksDataProvider } from "./context/TasksData";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+
+SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,9 +32,19 @@ export default function App() {
     { key: "taskPanel", component: <TaskPanel /> },
   ];
 
-  const renderItem = ({ item }) => (
-    <View style={styles.componentContainer}>{item.component}</View>
-  );
+  const [fontsLoaded] = useFonts({
+    Raleway: require("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync(); // Oculta la splash screen cuando las fuentes estén listas
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null; // Muestra una pantalla en blanco mientras se cargan las fuentes
+  }
 
   return (
     <TasksDataProvider>
@@ -44,7 +56,10 @@ export default function App() {
           imageStyle={styles.backgroundImage}
         >
           <StatusBar />
-          <SafeAreaView style={styles.safeArea}>
+          <SafeAreaView
+            style={styles.safeArea}
+            onLayout={onLayoutRootView}
+          >
             <KeyboardAvoidingView
               style={{ flex: 1 }}
               behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -53,11 +68,14 @@ export default function App() {
                 <Navbar />
                 <FlatList
                   data={content}
-                  renderItem={renderItem}
+                  renderItem={({ item }) => (
+                    <View style={styles.componentContainer}>
+                      {item.component}
+                    </View>
+                  )}
                   keyExtractor={(item) => item.key}
                   showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled" // Mantiene el teclado abierto en botones
-                  keyboardDismissMode="on-drag" // Cierra el teclado al arrastrar
+                  keyboardShouldPersistTaps="handled"
                   contentContainerStyle={styles.listContent}
                 />
               </View>
@@ -88,7 +106,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     flexGrow: 1,
-    paddingBottom: 20, // Espacio adicional para que el último componente no sea cortado
+    paddingBottom: 20,
   },
   componentContainer: {
     width: "90%",

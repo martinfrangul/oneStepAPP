@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import { LinearGradient } from 'expo-linear-gradient';
-
+import { LinearGradient } from "expo-linear-gradient";
+import CustomAlert from "./CustomAlert";
 
 const Counter = () => {
   const { mode, setMode, counterLap, setCounterLap, modes, initialCounterLap } =
@@ -14,6 +14,8 @@ const Counter = () => {
   const [playPause, setPlayPause] = useState(false);
   const [started, setStarted] = useState(false);
   const [bgColor, setBgColor] = useState(modes[mode].bgColor);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     setSeconds(0);
@@ -48,16 +50,16 @@ const Counter = () => {
 
     if (mode === "work") {
       if (counterLap > 1) {
-        Alert.alert("Good job!", "Have a short rest!");
+        setAlertMessage("Good job! Have a short rest!");
         setCounterLap((prev) => prev - 1);
         setModeHandler("shortBreak");
       } else {
-        Alert.alert("Great work!", "Let's have a long rest now!");
+        setAlertMessage("Great work! Let's have a long rest now!");
         setModeHandler("longBreak");
         setCounterLap(initialCounterLap);
       }
     } else if (mode === "shortBreak" || mode === "longBreak") {
-      Alert.alert("Time to work!", "Time to get back to work!");
+      setAlertMessage("Time to get back to work!");
       setModeHandler("work");
     }
   };
@@ -74,6 +76,7 @@ const Counter = () => {
           setSeconds(59);
         } else {
           onSkipHandler();
+          setShowAlert(true);
         }
       }, 1000);
     } else {
@@ -85,39 +88,39 @@ const Counter = () => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={["#FFC1BD", "#C8E8E3"]}
-        style={styles.gradientBorder}
-      >
-        <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
-          <View style={styles.timer}>
-            <Text style={styles.timeText}>
-              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-            </Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={onStartHandler}>
-              <Text style={styles.buttonText}>
-                {playPause ? (
-                  <Icon name="pause" size={30} color="#fff" />
-                ) : (
-                  <Icon name="play" size={30} color="#fff" />
-                )}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onResetHandler}>
-              <Text style={styles.buttonText}>
-                <Icon name="rotate-left" size={30} color="#fff" />
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onSkipHandler}>
-              <Text style={styles.buttonText}>
-                <Icon name="forward-step" size={30} color="#fff" />
-              </Text>
-            </TouchableOpacity>
-          </View>
+      <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
+        <View style={styles.timer}>
+          <Text style={styles.timeText}>
+            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+          </Text>
         </View>
-      </LinearGradient>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={onStartHandler}>
+            <Text style={styles.buttonText}>
+              {playPause ? (
+                <Icon name="pause" size={30} color="#fff" />
+              ) : (
+                <Icon name="play" size={30} color="#fff" />
+              )}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={onResetHandler}>
+            <Text style={styles.buttonText}>
+              <Icon name="rotate-left" size={30} color="#fff" />
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={onSkipHandler}>
+            <Text style={styles.buttonText}>
+              <Icon name="forward-step" size={30} color="#fff" />
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <CustomAlert
+        visible={showAlert}
+        message={alertMessage}
+        onClose={() => setShowAlert(false)}
+      />
     </View>
   );
 };
@@ -128,18 +131,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  gradientBorder: {
-    padding: 4,
-    borderRadius: 20,
-    width: 330,
-    height: 250,
-  },
+
   counterContainer: {
     flex: 1,
     borderRadius: 16,
-    padding: 16,
+    padding: 36,
     justifyContent: "center",
     alignItems: "center",
+    flex: 1,
+    borderRadius: 16,
+    padding: 36,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "rgba(0, 0, 0, 0.1)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   timer: {
     paddingVertical: 16,

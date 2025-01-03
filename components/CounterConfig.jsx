@@ -6,11 +6,15 @@ import {
   TextInput, 
   TouchableOpacity, 
   StyleSheet, 
-  Alert 
+  Alert, 
+  KeyboardAvoidingView, 
+  Platform, 
+  TouchableWithoutFeedback, 
+  Keyboard 
 } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 
-const ConfigCounter = ({ visible, onClose }) => {
+const CounterConfig = ({ visible, onClose }) => {
   const context = useContext(CounterContext);
   const {
     counterLap,
@@ -73,71 +77,76 @@ const ConfigCounter = ({ visible, onClose }) => {
       transparent={true}
       onRequestClose={onClose}
     >
-      <View style={styles.modalBackground}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>Configuration</Text>
+      <KeyboardAvoidingView
+        style={styles.modalBackground}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.title}>Configuration</Text>
 
-          <Text style={styles.label}>Work</Text>
-          <TextInput
-            style={[
-              styles.input,
-              errors.workMinutes && styles.inputError,
-            ]}
-            value={String(workMinutes)}
-            onChangeText={(value) => setWorkMinutes(parseInt(value) || "")}
-            keyboardType="numeric"
-          />
-          {errors.workMinutes && <Text style={styles.errorText}>{errors.workMinutes}</Text>}
+            <Text style={styles.label}>Work</Text>
+            <TextInput
+              style={[
+                styles.input,
+                errors.workMinutes && styles.inputError,
+              ]}
+              value={String(workMinutes)}
+              onChangeText={(value) => setWorkMinutes(parseInt(value) || "")}
+              keyboardType="numeric"
+            />
+            {errors.workMinutes && <Text style={styles.errorText}>{errors.workMinutes}</Text>}
 
-          <Text style={styles.label}>Short rest</Text>
-          <TextInput
-            style={[
-              styles.input,
-              errors.SRMinutes && styles.inputError,
-            ]}
-            value={String(SRMinutes)}
-            onChangeText={(value) => setSRMinutes(parseInt(value) || "")}
-            keyboardType="numeric"
-          />
-          {errors.SRMinutes && <Text style={styles.errorText}>{errors.SRMinutes}</Text>}
+            <Text style={styles.label}>Short rest</Text>
+            <TextInput
+              style={[
+                styles.input,
+                errors.SRMinutes && styles.inputError,
+              ]}
+              value={String(SRMinutes)}
+              onChangeText={(value) => setSRMinutes(parseInt(value) || "")}
+              keyboardType="numeric"
+            />
+            {errors.SRMinutes && <Text style={styles.errorText}>{errors.SRMinutes}</Text>}
 
-          <Text style={styles.label}>Long rest</Text>
-          <TextInput
-            style={[
-              styles.input,
-              errors.LRMinutes && styles.inputError,
-            ]}
-            value={String(LRMinutes)}
-            onChangeText={(value) => setLRMinutes(parseInt(value) || "")}
-            keyboardType="numeric"
-          />
-          {errors.LRMinutes && <Text style={styles.errorText}>{errors.LRMinutes}</Text>}
+            <Text style={styles.label}>Long rest</Text>
+            <TextInput
+              style={[
+                styles.input,
+                errors.LRMinutes && styles.inputError,
+              ]}
+              value={String(LRMinutes)}
+              onChangeText={(value) => setLRMinutes(parseInt(value) || "")}
+              keyboardType="numeric"
+            />
+            {errors.LRMinutes && <Text style={styles.errorText}>{errors.LRMinutes}</Text>}
 
-          <Text style={styles.label}>Lap interval</Text>
-          <TextInput
-            style={[
-              styles.input,
-              errors.counterLap && styles.inputError,
-            ]}
-            value={String(counterLap)}
-            onChangeText={(value) => setCounterLap(parseInt(value) || "")}
-            keyboardType="numeric"
-          />
-          {errors.counterLap && <Text style={styles.errorText}>{errors.counterLap}</Text>}
+            <Text style={styles.label}>Lap interval</Text>
+            <TextInput
+              style={[
+                styles.input,
+                errors.counterLap && styles.inputError,
+              ]}
+              value={String(counterLap)}
+              onChangeText={(value) => setCounterLap(parseInt(value) || "")}
+              keyboardType="numeric"
+            />
+            {errors.counterLap && <Text style={styles.errorText}>{errors.counterLap}</Text>}
 
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.buttonDefault} onPress={handleResetDefault}>
-              <Text style={styles.buttonText}>Default</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
-              <Text style={styles.buttonText}>Accept</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonCancel} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            <View style={styles.actions}>
+              <TouchableOpacity style={styles.buttonDefault} onPress={handleResetDefault}>
+                <Text style={styles.buttonText}>Default</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
+                <Text style={styles.buttonText}>Accept</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonCancel} onPress={onClose}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -210,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfigCounter;
+export default CounterConfig;
