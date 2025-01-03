@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { CounterContext } from "../context/CounterContext";
-import { BoxShadow } from "react-native-shadow";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const Counter = () => {
   const { mode, setMode, counterLap, setCounterLap, modes, initialCounterLap } =
     useContext(CounterContext);
 
-  /////////////// STATE ///////////////
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(modes[mode].minutes);
   const [playPause, setPlayPause] = useState(false);
@@ -26,8 +26,6 @@ const Counter = () => {
   const setModeHandler = (newMode) => {
     setMode(newMode);
   };
-
-  ////////////// HANDLERS //////////////
 
   const onStartHandler = () => {
     if (!started) setStarted(true);
@@ -64,8 +62,6 @@ const Counter = () => {
     }
   };
 
-  //////////// COUNTER /////////////////
-
   useEffect(() => {
     let intervalId;
 
@@ -87,24 +83,12 @@ const Counter = () => {
     return () => clearInterval(intervalId);
   }, [playPause, seconds, minutes, started, mode]);
 
-  // Configuración de la sombra
-  const shadowOpt = {
-    width: 320, // Ancho del contenedor
-    height: 240, // Alto del contenedor
-    color: "#000", // Color de la sombra
-    border: 10, // Grosor del borde de la sombra
-    radius: 16, // Radio de borde
-    opacity: 0.2, // Opacidad de la sombra
-    x: 0, // Desplazamiento horizontal
-    y: 8, // Desplazamiento vertical
-    style: { marginVertical: 10 },
-  };
-
   return (
     <View style={styles.container}>
-      {/* Contenedor de sombra */}
-      <BoxShadow setting={shadowOpt}>
-        {/* Contenedor del contador */}
+      <LinearGradient
+        colors={["#FFC1BD", "#C8E8E3"]}
+        style={styles.gradientBorder}
+      >
         <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
           <View style={styles.timer}>
             <Text style={styles.timeText}>
@@ -113,19 +97,27 @@ const Counter = () => {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={onStartHandler}>
-              <Text style={styles.buttonText}>{playPause ?  <Icon name="pause" size={30} color="#fffff" /> :  <Icon name="play" size={30} color="#fffff" />}</Text>
+              <Text style={styles.buttonText}>
+                {playPause ? (
+                  <Icon name="pause" size={30} color="#fff" />
+                ) : (
+                  <Icon name="play" size={30} color="#fff" />
+                )}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onResetHandler}>
               <Text style={styles.buttonText}>
-              <Icon name="rotate-left" size={30} color="#fffff" />
+                <Icon name="rotate-left" size={30} color="#fff" />
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onSkipHandler}>
-              <Text style={styles.buttonText}><Icon name="forward-step" size={30} color="#fffff" /></Text>
+              <Text style={styles.buttonText}>
+                <Icon name="forward-step" size={30} color="#fff" />
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
-      </BoxShadow>
+      </LinearGradient>
     </View>
   );
 };
@@ -136,13 +128,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  gradientBorder: {
+    padding: 4,
+    borderRadius: 20,
+    width: 330,
+    height: 250,
+  },
   counterContainer: {
-    width: 320, 
-    height: 240, 
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
     borderRadius: 16,
     padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
   timer: {
     paddingVertical: 16,
@@ -150,7 +147,7 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 48,
     fontWeight: "bold",
-    color: "#00000",
+    color: "#000",
   },
   buttonContainer: {
     flexDirection: "row",

@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
       backgroundColor: "white", // Default background
     },
     buttonActiveWork: {
-      backgroundColor: "#FF5722", // Replace with bg-bgW equivalent
+      backgroundColor: "#D8D8DD",
     },
     buttonActiveShortBreak: {
-      backgroundColor: "#4CAF50", // Replace with bg-bgSR equivalent
+      backgroundColor: "#D8E6C6",
     },
     buttonActiveLongBreak: {
-      backgroundColor: "#3F51B5", // Replace with bg-bgLR equivalent
-      color: "#FDFDAC", // Replace with text-[#FDFDAC]
+      backgroundColor: "#f68986",
+      color: "#FDFDAC",
     },
     buttonText: {
       textAlign: "center",
