@@ -1,16 +1,15 @@
-import React, { useContext, useState } from "react";
-import { 
-  Modal, 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Alert, 
-  KeyboardAvoidingView, 
-  Platform, 
-  TouchableWithoutFeedback, 
-  Keyboard 
+import React, { useContext, useState, useEffect } from "react";
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 
@@ -26,24 +25,39 @@ const CounterConfig = ({ visible, onClose }) => {
     SRMinutes,
     LRMinutes,
     setInitialCounterLap,
-    initialCounterLap,
   } = context;
 
+  // Estados temporales
+  const [tempWorkMinutes, setTempWorkMinutes] = useState(workMinutes);
+  const [tempSRMinutes, setTempSRMinutes] = useState(SRMinutes);
+  const [tempLRMinutes, setTempLRMinutes] = useState(LRMinutes);
+  const [tempCounterLap, setTempCounterLap] = useState(counterLap);
+
   const [errors, setErrors] = useState({});
+
+  // Sincroniza los valores originales cuando se abre el modal
+  useEffect(() => {
+    if (visible) {
+      setTempWorkMinutes(workMinutes);
+      setTempSRMinutes(SRMinutes);
+      setTempLRMinutes(LRMinutes);
+      setTempCounterLap(counterLap);
+    }
+  }, [visible, workMinutes, SRMinutes, LRMinutes, counterLap]);
 
   const handleAccept = () => {
     const validationErrors = {};
 
-    if (!workMinutes || isNaN(workMinutes) || workMinutes <= 0) {
+    if (!tempWorkMinutes || isNaN(tempWorkMinutes) || tempWorkMinutes <= 0) {
       validationErrors.workMinutes = "Please enter a valid work time.";
     }
-    if (!SRMinutes || isNaN(SRMinutes) || SRMinutes <= 0) {
+    if (!tempSRMinutes || isNaN(tempSRMinutes) || tempSRMinutes <= 0) {
       validationErrors.SRMinutes = "Please enter a valid short rest time.";
     }
-    if (!LRMinutes || isNaN(LRMinutes) || LRMinutes <= 0) {
+    if (!tempLRMinutes || isNaN(tempLRMinutes) || tempLRMinutes <= 0) {
       validationErrors.LRMinutes = "Please enter a valid long rest time.";
     }
-    if (!counterLap || isNaN(counterLap) || counterLap <= 0) {
+    if (!tempCounterLap || isNaN(tempCounterLap) || tempCounterLap <= 0) {
       validationErrors.counterLap = "Please enter a valid lap interval.";
     }
 
@@ -52,21 +66,20 @@ const CounterConfig = ({ visible, onClose }) => {
       return;
     }
 
-    setWorkMinutes(workMinutes);
-    setSRMinutes(SRMinutes);
-    setLRMinutes(LRMinutes);
-    setCounterLap(counterLap);
-    setInitialCounterLap(counterLap);
+    setWorkMinutes(tempWorkMinutes);
+    setSRMinutes(tempSRMinutes);
+    setLRMinutes(tempLRMinutes);
+    setCounterLap(tempCounterLap);
+    setInitialCounterLap(tempCounterLap);
     setErrors({});
     onClose();
   };
 
   const handleResetDefault = () => {
-    setWorkMinutes(25);
-    setSRMinutes(5);
-    setLRMinutes(15);
-    setCounterLap(4);
-    setInitialCounterLap(4);
+    setTempWorkMinutes(25);
+    setTempSRMinutes(5);
+    setTempLRMinutes(15);
+    setTempCounterLap(4);
     setErrors({});
   };
 
@@ -87,57 +100,59 @@ const CounterConfig = ({ visible, onClose }) => {
 
             <Text style={styles.label}>Work</Text>
             <TextInput
-              style={[
-                styles.input,
-                errors.workMinutes && styles.inputError,
-              ]}
-              value={String(workMinutes)}
-              onChangeText={(value) => setWorkMinutes(parseInt(value) || "")}
+              style={[styles.input, errors.workMinutes && styles.inputError]}
+              value={String(tempWorkMinutes)}
+              onChangeText={(value) => setTempWorkMinutes(parseInt(value) || "")}
               keyboardType="numeric"
             />
-            {errors.workMinutes && <Text style={styles.errorText}>{errors.workMinutes}</Text>}
+            {errors.workMinutes && (
+              <Text style={styles.errorText}>{errors.workMinutes}</Text>
+            )}
 
             <Text style={styles.label}>Short rest</Text>
             <TextInput
-              style={[
-                styles.input,
-                errors.SRMinutes && styles.inputError,
-              ]}
-              value={String(SRMinutes)}
-              onChangeText={(value) => setSRMinutes(parseInt(value) || "")}
+              style={[styles.input, errors.SRMinutes && styles.inputError]}
+              value={String(tempSRMinutes)}
+              onChangeText={(value) => setTempSRMinutes(parseInt(value) || "")}
               keyboardType="numeric"
             />
-            {errors.SRMinutes && <Text style={styles.errorText}>{errors.SRMinutes}</Text>}
+            {errors.SRMinutes && (
+              <Text style={styles.errorText}>{errors.SRMinutes}</Text>
+            )}
 
             <Text style={styles.label}>Long rest</Text>
             <TextInput
-              style={[
-                styles.input,
-                errors.LRMinutes && styles.inputError,
-              ]}
-              value={String(LRMinutes)}
-              onChangeText={(value) => setLRMinutes(parseInt(value) || "")}
+              style={[styles.input, errors.LRMinutes && styles.inputError]}
+              value={String(tempLRMinutes)}
+              onChangeText={(value) => setTempLRMinutes(parseInt(value) || "")}
               keyboardType="numeric"
             />
-            {errors.LRMinutes && <Text style={styles.errorText}>{errors.LRMinutes}</Text>}
+            {errors.LRMinutes && (
+              <Text style={styles.errorText}>{errors.LRMinutes}</Text>
+            )}
 
             <Text style={styles.label}>Lap interval</Text>
             <TextInput
-              style={[
-                styles.input,
-                errors.counterLap && styles.inputError,
-              ]}
-              value={String(counterLap)}
-              onChangeText={(value) => setCounterLap(parseInt(value) || "")}
+              style={[styles.input, errors.counterLap && styles.inputError]}
+              value={String(tempCounterLap)}
+              onChangeText={(value) => setTempCounterLap(parseInt(value) || "")}
               keyboardType="numeric"
             />
-            {errors.counterLap && <Text style={styles.errorText}>{errors.counterLap}</Text>}
+            {errors.counterLap && (
+              <Text style={styles.errorText}>{errors.counterLap}</Text>
+            )}
 
             <View style={styles.actions}>
-              <TouchableOpacity style={styles.buttonDefault} onPress={handleResetDefault}>
+              <TouchableOpacity
+                style={styles.buttonDefault}
+                onPress={handleResetDefault}
+              >
                 <Text style={styles.buttonText}>Default</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
+              <TouchableOpacity
+                style={styles.buttonAccept}
+                onPress={handleAccept}
+              >
                 <Text style={styles.buttonText}>Accept</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonCancel} onPress={onClose}>

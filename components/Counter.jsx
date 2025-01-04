@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import { LinearGradient } from "expo-linear-gradient";
 import CustomAlert from "./CustomAlert";
 
 const Counter = () => {
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 20,
   },
 
   counterContainer: {
@@ -147,9 +147,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.1)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.5,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 8,
   },
   timer: {
     paddingVertical: 16,

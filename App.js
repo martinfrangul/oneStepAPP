@@ -34,6 +34,7 @@ export default function App() {
 
   const [fontsLoaded] = useFonts({
     Raleway: require("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf"),
+    RalewayMedium: require("./assets/fonts/Raleway/Raleway-Medium.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -111,9 +112,8 @@ const styles = StyleSheet.create({
   componentContainer: {
     width: "90%",
     alignSelf: "center",
-    padding: 16,
+    padding: 4,
     borderRadius: 12,
-    marginBottom: 16,
   },
   floatingButton: {
     position: "absolute",

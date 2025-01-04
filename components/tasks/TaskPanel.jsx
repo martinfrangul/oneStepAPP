@@ -6,7 +6,6 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { TasksData } from "../../context/TasksData";
 import Icon from "react-native-vector-icons/Feather";
 
@@ -27,10 +26,6 @@ const TaskPanel = () => {
   };
 
   return (
-    <LinearGradient
-      colors={["#FFC1BD", "#C8E8E3"]}
-      style={styles.gradientContainer}
-    >
       <View style={styles.container}>
         <Text style={styles.title}>Tasks list</Text>
         <View style={styles.separator} />
@@ -56,7 +51,6 @@ const TaskPanel = () => {
           <Text style={styles.noTasks}>No tasks yet</Text>
         )}
       </View>
-    </LinearGradient>
   );
 };
 
@@ -72,6 +66,13 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#FFF",
     borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "rgba(0, 0, 0, 0.1)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 8,
   },
   title: {
     textAlign: "center",
