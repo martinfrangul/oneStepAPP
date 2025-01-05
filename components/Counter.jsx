@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import CustomAlert from "./CustomAlert";
+import SoundAlert from "./SoundAlert";
 
 const Counter = () => {
   const { mode, setMode, counterLap, setCounterLap, modes, initialCounterLap } =
@@ -120,6 +121,7 @@ const Counter = () => {
         message={alertMessage}
         onClose={() => setShowAlert(false)}
       />
+      <SoundAlert showAlert={showAlert} message={alertMessage} setShowAlert={setShowAlert}/>
     </View>
   );
 };

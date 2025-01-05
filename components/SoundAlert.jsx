@@ -1,77 +1,42 @@
-import React, { useContext } from "react";
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
+import { useContext, useEffect } from "react";
+import { StyleSheet } from "react-native";
 import { Audio } from "expo-av";
 import { AlertContext } from "../context/AlertContext";
-import PropTypes from "prop-types";
 
-const Alert = ({ showAlert, setShowAlert, message }) => {
+const SoundAlert = ({ showAlert }) => {
   const context = useContext(AlertContext);
   const { soundToggle } = context;
 
-  // Función para reproducir sonido
+
   const playSound = async () => {
-    if (soundToggle) {
-      const sound = new Audio.Sound();
-      try {
-        await sound.loadAsync(require("../assets/sounds/alert.mp3"));
-        await sound.playAsync();
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.didJustFinish) {
-            sound.unloadAsync(); // Descargar el sonido después de reproducirlo
-          }
-        });
-      } catch (error) {
-        console.error("Error al reproducir sonido", error);
-      }
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../assets/sounds/alert.mp3")
+      );
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch (error) {
+      console.error("Error al reproducir sonido:", error);
     }
   };
+  
 
   // Reproducir sonido cuando se muestra la alerta
-  React.useEffect(() => {
-    if (showAlert) {
+  useEffect(() => {
+    if (showAlert && soundToggle) {
       playSound();
     }
   }, [showAlert, soundToggle]);
 
-  return (
-    <Modal
-      visible={showAlert}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={() => setShowAlert(false)}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.alertBox}>
-          <View style={styles.header}>
-            <View style={styles.iconContainer}>
-              <Text style={styles.icon}>❗</Text>
-            </View>
-            <Text style={styles.title}>¡Alerta!</Text>
-          </View>
-          <View style={styles.body}>
-            <Text style={styles.message}>{message}</Text>
-          </View>
-          <View style={styles.footer}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setShowAlert(false)}
-            >
-              <Text style={styles.closeButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
+  return null;
 };
 
-Alert.propTypes = {
-  showAlert: PropTypes.bool.isRequired,
-  setShowAlert: PropTypes.func.isRequired,
-  message: PropTypes.string.isRequired,
-};
 
-export default Alert;
+export default SoundAlert;
 
 const styles = StyleSheet.create({
   overlay: {

@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect} from "react";
+import { Audio } from "expo-av";
 import {
   StyleSheet,
   ImageBackground,
@@ -8,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Button
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
@@ -21,12 +23,33 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import ButtonsGorup from "./components/ButtonsGroup";
 import { AlertContextProvider } from "./context/AlertContext";
+import ClearStorage from "./components/ClearStorage";
 
 SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
 
+
+
+  useEffect(() => {
+    const configureAudio = async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false, // No se permite grabar en iOS
+          playsInSilentModeIOS: true, // Permite reproducir en modo silencioso en iOS
+          shouldDuckAndroid: true, // Permitir "ducking" en Android
+          playThroughEarpieceAndroid: false, // No reproducir a través del auricular
+        });
+        console.log("Modo de audio configurado correctamente.");
+      } catch (error) {
+        console.error("Error configurando el modo de audio:", error);
+      }
+    };
+  
+    configureAudio();
+  }, []);
+  
   const content = [
     { key: "counter", component: <Counter /> },
     { key: "buttonsGropu", component: <ButtonsGorup /> },
@@ -88,6 +111,8 @@ export default function App() {
               visible={modalVisible}
               onClose={() => setModalVisible(false)}
             />
+            {/* <ClearStorage /> */}
+            
           </SafeAreaView>
         </ImageBackground>
       </CounterContextProvider>

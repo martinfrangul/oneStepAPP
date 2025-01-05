@@ -1,5 +1,4 @@
 import useAsyncStorageState from '../hooks/useAsyncStorageState';
-import PropTypes from "prop-types";
 import { createContext } from 'react';
 
 const TasksData = createContext();
@@ -13,10 +12,6 @@ const TasksDataProvider = ({ children }) => {
       {children}
     </TasksData.Provider>
   );
-};
-
-TasksDataProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export { TasksData, TasksDataProvider };

@@ -14,7 +14,7 @@ const CompletedTasks = ({ visible, onClose }) => {
       <Modal
         visible={visible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={onClose}
       >
         <View style={styles.modalOverlay}>

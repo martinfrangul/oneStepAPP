@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { TasksData } from "../../context/TasksData";
 
 const ConfirmationModal = ({ visible, onClose, completedTasksDialogRef }) => {
+  
   const { setCompletedTasks } = useContext(TasksData);
 
   const onCleanCompletedTasks = () => {
@@ -26,7 +27,7 @@ const ConfirmationModal = ({ visible, onClose, completedTasksDialogRef }) => {
 
   return (
     <Modal
-      visible={visible}
+    visible={visible}
       transparent={true}
       animationType="slide"
       onRequestClose={onClose}
