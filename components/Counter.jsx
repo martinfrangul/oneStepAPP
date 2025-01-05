@@ -89,9 +89,9 @@ const Counter = () => {
     <View style={styles.container}>
       <View style={[styles.counterContainer, { backgroundColor: bgColor }]}>
         <View style={styles.timer}>
-          <Text style={styles.timeText}>
-            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Text>
+        <Text style={[styles.timeText, mode === 'longBreak' && { color: '#FFFFFF' }]}>
+              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            </Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={onStartHandler}>

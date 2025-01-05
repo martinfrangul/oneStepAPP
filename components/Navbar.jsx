@@ -58,7 +58,7 @@ const Navbar = () => {
           ]}
           onPress={selectLRModeHandler}
         >
-          <Text style={styles.buttonText}>Long rest!</Text>
+          <Text style={[styles.buttonText, mode === 'longBreak' && { color: '#FFFFFF'}]}>Long rest!</Text>
         </TouchableOpacity>
       </View>
 

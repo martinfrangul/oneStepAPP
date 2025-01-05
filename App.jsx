@@ -12,7 +12,6 @@ import {
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
 import Counter from "./components/Counter";
-import CounterConfigButton from "./components/buttons/CounterConfigButton";
 import CounterConfig from "./components/CounterConfig";
 import { IMAGES } from "./config/colors";
 import TaskManager from "./components/tasks/TaskManager";
@@ -20,6 +19,8 @@ import TaskPanel from "./components/tasks/TaskPanel";
 import { TasksDataProvider } from "./context/TasksData";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
+import ButtonsGorup from "./components/ButtonsGroup";
+import { AlertContextProvider } from "./context/AlertContext";
 
 SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
@@ -28,6 +29,7 @@ export default function App() {
 
   const content = [
     { key: "counter", component: <Counter /> },
+    { key: "buttonsGropu", component: <ButtonsGorup /> },
     { key: "taskManager", component: <TaskManager /> },
     { key: "taskPanel", component: <TaskPanel /> },
   ];
@@ -49,6 +51,7 @@ export default function App() {
 
   return (
     <TasksDataProvider>
+      <AlertContextProvider>
       <CounterContextProvider>
         <ImageBackground
           source={IMAGES.backgroundLG}
@@ -81,9 +84,6 @@ export default function App() {
                 />
               </View>
             </KeyboardAvoidingView>
-            <View style={styles.floatingButton}>
-              <CounterConfigButton onPress={() => setModalVisible(true)} />
-            </View>
             <CounterConfig
               visible={modalVisible}
               onClose={() => setModalVisible(false)}
@@ -91,6 +91,7 @@ export default function App() {
           </SafeAreaView>
         </ImageBackground>
       </CounterContextProvider>
+      </AlertContextProvider>
     </TasksDataProvider>
   );
 }
@@ -114,11 +115,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     padding: 4,
     borderRadius: 12,
-  },
-  floatingButton: {
-    position: "absolute",
-    bottom: 30,
-    right: 30,
-    zIndex: 10,
   },
 });
