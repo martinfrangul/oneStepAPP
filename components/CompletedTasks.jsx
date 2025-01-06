@@ -1,142 +1,118 @@
 import React, { useState, useContext } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Modal, FlatList } from "react-native";
-import ConfirmationModal from "./tasks/ConfirmationModal";
+import { StyleSheet, FlatList, View } from "react-native";
+import { Button, Dialog, Portal, Text } from "react-native-paper";
 import { TasksData } from "../context/TasksData";
+import ConfirmationModal from "../components/tasks/ConfirmationModal";
 
 const CompletedTasks = ({ visible, onClose }) => {
   const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const { completedTasks, setCompletedTasks } = useContext(TasksData);
 
-  const { completedTasks } = useContext(TasksData);
+  const handleDeleteAll = () => {
+    setCompletedTasks([]);
+    setConfirmationVisible(false);
+    onClose(); // Cierra ambos modales
+  };
 
   return (
-    <>
+    <Portal>
       {/* Modal principal */}
-      <Modal
-        visible={visible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={onClose}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <View style={styles.header}>
-              <Text style={styles.title}>Latest completed tasks</Text>
-            </View>
-            <View style={styles.content}>
-              {completedTasks.length !== 0 ? (
-                <FlatList
-                  data={completedTasks.slice(-8)}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <View style={styles.taskItem}>
-                      <Text style={styles.taskText}>{item.text}</Text>
-                    </View>
+      <Dialog visible={visible} onDismiss={onClose} style={styles.dialog}>
+        <Dialog.Title style={styles.title}>Completed Tasks</Dialog.Title>
+        <Dialog.Content>
+          {completedTasks.length > 0 ? (
+            <FlatList
+              data={completedTasks.slice(-8)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.taskItem}>
+                  <Text style={styles.taskText}>{item.text}</Text>
+                  {item.completedAt && (
+                    <Text style={styles.taskDate}>
+                      {new Date(item.completedAt).toLocaleDateString()}
+                    </Text>
                   )}
-                />
-              ) : (
-                <Text style={styles.noTasksText}>No completed tasks yet</Text>
+                </View>
               )}
-            </View>
-            <View style={styles.actions}>
-            {completedTasks.length > 0 && (
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => setConfirmationVisible(true)}
-              >
-                <Text style={styles.deleteButtonText}>Delete all</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-          </View>
-        </View>
-      </Modal>
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+            />
+          ) : (
+            <Text style={styles.noTasksText}>No completed tasks yet</Text>
+          )}
+        </Dialog.Content>
+        <Dialog.Actions style={styles.actions}>
+          {completedTasks.length > 0 && (
+            <Button
+              mode="contained"
+              onPress={() => setConfirmationVisible(true)}
+              style={styles.deleteButton}
+            >
+              Delete All
+            </Button>
+          )}
+          <Button onPress={onClose}>Close</Button>
+        </Dialog.Actions>
+      </Dialog>
 
       {/* Modal de confirmación */}
       <ConfirmationModal
         visible={confirmationVisible}
         onClose={() => setConfirmationVisible(false)}
-        completedTasksDialogRef={onClose}
+        onConfirm={handleDeleteAll}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete all completed tasks? This action cannot be undone."
       />
-    </>
+    </Portal>
   );
 };
 
 export default CompletedTasks;
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalBox: {
-    width: "90%",
+  dialog: {
+    borderRadius: 12,
     backgroundColor: "#ffffff",
-    borderRadius: 20,
-    overflow: "hidden",
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 16,
   },
   title: {
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: "bold",
-  },
-  content: {
-    maxHeight: 300,
-    marginBottom: 16,
+    fontWeight: "600",
+    marginBottom: 10,
+    color: "#333",
   },
   taskItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 0.5,
-    borderColor: "#000",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    backgroundColor: "#f9f9f9",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    marginVertical: 4,
   },
   taskText: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#333",
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  taskDate: {
+    fontSize: 12,
+    color: "#777",
+  },
+  separator: {
+    height: 8,
   },
   noTasksText: {
-    fontStyle: "italic",
     textAlign: "center",
-    color: "#555",
+    fontSize: 14,
+    color: "#999",
+    marginVertical: 20,
   },
   actions: {
-    flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 8,
+    marginBottom: 10,
   },
   deleteButton: {
-    borderWidth: 2,
-    borderColor: "#FF0000",
-    padding: 8,
-    borderRadius: 5,
-    backgroundColor: "transparent",
-  },
-  deleteButtonText: {
-    color: "#FF0000",
-    fontWeight: "bold",
-  },
-  closeButton: {
-    borderWidth: 1,
-    borderColor: "#000",
-    padding: 8,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "#000",
-    fontWeight: "bold",
+    backgroundColor: "#ff6347",
   },
 });
