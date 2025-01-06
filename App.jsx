@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Audio } from "expo-av";
 import {
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  Button
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
@@ -23,15 +22,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import ButtonsGorup from "./components/ButtonsGroup";
 import { AlertContextProvider } from "./context/AlertContext";
-import ClearStorage from "./components/ClearStorage";
+import { Provider as PaperProvider } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
 
-
-
+// Confiuración de audio
   useEffect(() => {
     const configureAudio = async () => {
       try {
@@ -46,10 +44,11 @@ export default function App() {
         console.error("Error configurando el modo de audio:", error);
       }
     };
-  
+
     configureAudio();
   }, []);
-  
+
+  // Bloques de contenido
   const content = [
     { key: "counter", component: <Counter /> },
     { key: "buttonsGropu", component: <ButtonsGorup /> },
@@ -74,49 +73,46 @@ export default function App() {
 
   return (
     <TasksDataProvider>
-      <AlertContextProvider>
-      <CounterContextProvider>
-        <ImageBackground
-          source={IMAGES.backgroundLG}
-          resizeMode="cover"
-          style={styles.rootScreen}
-          imageStyle={styles.backgroundImage}
-        >
-          <StatusBar />
-          <SafeAreaView
-            style={styles.safeArea}
-            onLayout={onLayoutRootView}
-          >
-            <KeyboardAvoidingView
-              style={{ flex: 1 }}
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
+      <PaperProvider>
+        <AlertContextProvider>
+          <CounterContextProvider>
+            <ImageBackground
+              source={IMAGES.backgroundLG}
+              resizeMode="cover"
+              style={styles.rootScreen}
+              imageStyle={styles.backgroundImage}
             >
-              <View style={{ flex: 1 }}>
-                <Navbar />
-                <FlatList
-                  data={content}
-                  renderItem={({ item }) => (
-                    <View style={styles.componentContainer}>
-                      {item.component}
-                    </View>
-                  )}
-                  keyExtractor={(item) => item.key}
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                  contentContainerStyle={styles.listContent}
+              <StatusBar />
+              <SafeAreaView style={styles.safeArea} onLayout={onLayoutRootView}>
+                <KeyboardAvoidingView
+                  style={{ flex: 1 }}
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Navbar />
+                    <FlatList
+                      data={content}
+                      renderItem={({ item }) => (
+                        <View style={styles.componentContainer}>
+                          {item.component}
+                        </View>
+                      )}
+                      keyExtractor={(item) => item.key}
+                      showsVerticalScrollIndicator={false}
+                      keyboardShouldPersistTaps="handled"
+                      contentContainerStyle={styles.listContent}
+                    />
+                  </View>
+                </KeyboardAvoidingView>
+                <CounterConfig
+                  visible={modalVisible}
+                  onClose={() => setModalVisible(false)}
                 />
-              </View>
-            </KeyboardAvoidingView>
-            <CounterConfig
-              visible={modalVisible}
-              onClose={() => setModalVisible(false)}
-            />
-            {/* <ClearStorage /> */}
-            
-          </SafeAreaView>
-        </ImageBackground>
-      </CounterContextProvider>
-      </AlertContextProvider>
+              </SafeAreaView>
+            </ImageBackground>
+          </CounterContextProvider>
+        </AlertContextProvider>
+      </PaperProvider>
     </TasksDataProvider>
   );
 }
