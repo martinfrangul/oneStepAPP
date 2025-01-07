@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    borderRadius: 16,
     padding: 36,
     justifyContent: "center",
     alignItems: "center",

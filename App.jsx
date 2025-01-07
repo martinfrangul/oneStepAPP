@@ -24,7 +24,7 @@ import ButtonsGorup from "./components/ButtonsGroup";
 import { AlertContextProvider } from "./context/AlertContext";
 import { Provider as PaperProvider } from "react-native-paper";
 
-SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
+// SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,15 +61,24 @@ export default function App() {
     RalewayMedium: require("./assets/fonts/Raleway/Raleway-Medium.ttf"),
   });
 
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingScreen}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync(); // Oculta la splash screen cuando las fuentes estén listas
+      try {
+        await SplashScreen.hideAsync();
+      } catch (error) {
+        console.error("Error ocultando SplashScreen:", error);
+      }
     }
   }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null; // Muestra una pantalla en blanco mientras se cargan las fuentes
-  }
+  
 
   return (
     <TasksDataProvider>
@@ -82,8 +91,8 @@ export default function App() {
               style={styles.rootScreen}
               imageStyle={styles.backgroundImage}
             >
-              <StatusBar />
               <SafeAreaView style={styles.safeArea} onLayout={onLayoutRootView}>
+              <StatusBar />
                 <KeyboardAvoidingView
                   style={{ flex: 1 }}
                   behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -137,4 +146,11 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 12,
   },
+  loadingScreen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+  },
+  
 });
