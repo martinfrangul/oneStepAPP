@@ -24,6 +24,13 @@
     "react-native-svg": "15.8.0",
     "react-native-vector-icons": "^10.2.0"
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": false
+      }
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.25.2"
   },

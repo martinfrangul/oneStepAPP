@@ -13,19 +13,27 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logoOneStep.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.martinfrangul.onestepapp"
     },
     "web": {
-      "favicon": "./assets/images/logoOneStep.png"
+      "favicon": "./assets/images/browsericon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a05bc6e8-9535-4370-a0c6-6342a6fb173b"
+      }
+    }
   }
 }
