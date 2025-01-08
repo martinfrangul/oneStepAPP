@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import {
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Text
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
@@ -24,29 +25,50 @@ import ButtonsGorup from "./components/ButtonsGroup";
 import { AlertContextProvider } from "./context/AlertContext";
 import { Provider as PaperProvider } from "react-native-paper";
 
-// SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
+SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
-  const [modalVisible, setModalVisible] = useState(false);
 
-// Confiuración de audio
-  useEffect(() => {
-    const configureAudio = async () => {
-      try {
+  const [fontsLoaded] = useFonts({
+    Raleway: require("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf"),
+    RalewayMedium: require("./assets/fonts/Raleway/Raleway-Medium.ttf"),
+    BarlowCondensedLight: require("./assets/fonts/BarlowCondensed-Light.ttf"),
+  });
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isAppReady, setIsAppReady] = useState(false);
+  
+
+// Configuración de audio y preparación de la app
+useEffect(() => {
+  const prepareApp = async () => {
+    try {
+      if (fontsLoaded) {
         await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false, // No se permite grabar en iOS
-          playsInSilentModeIOS: true, // Permite reproducir en modo silencioso en iOS
-          shouldDuckAndroid: true, // Permitir "ducking" en Android
-          playThroughEarpieceAndroid: false, // No reproducir a través del auricular
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: true,
+          playThroughEarpieceAndroid: false,
         });
         console.log("Modo de audio configurado correctamente.");
-      } catch (error) {
-        console.error("Error configurando el modo de audio:", error);
+        setIsAppReady(true);
+        await SplashScreen.hideAsync();
       }
-    };
+    } catch (error) {
+      console.error("Error preparando la aplicación:", error);
+    }
+  };
 
-    configureAudio();
-  }, []);
+  prepareApp();
+}, [fontsLoaded]);
+
+if (!isAppReady) {
+  return (
+    <View style={styles.loadingScreen}>
+      <Text>Cargando...</Text>
+    </View>
+  );
+}
 
   // Bloques de contenido
   const content = [
@@ -55,30 +77,6 @@ export default function App() {
     { key: "taskManager", component: <TaskManager /> },
     { key: "taskPanel", component: <TaskPanel /> },
   ];
-
-  const [fontsLoaded] = useFonts({
-    Raleway: require("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf"),
-    RalewayMedium: require("./assets/fonts/Raleway/Raleway-Medium.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loadingScreen}>
-        <Text>Cargando...</Text>
-      </View>
-    );
-  }
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      try {
-        await SplashScreen.hideAsync();
-      } catch (error) {
-        console.error("Error ocultando SplashScreen:", error);
-      }
-    }
-  }, [fontsLoaded]);
-  
 
   return (
     <TasksDataProvider>
@@ -91,7 +89,7 @@ export default function App() {
               style={styles.rootScreen}
               imageStyle={styles.backgroundImage}
             >
-              <SafeAreaView style={styles.safeArea} onLayout={onLayoutRootView}>
+              <SafeAreaView style={styles.safeArea}>
               <StatusBar />
                 <KeyboardAvoidingView
                   style={{ flex: 1 }}
