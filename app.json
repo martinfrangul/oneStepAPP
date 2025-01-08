@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "One Step",
-    "slug": "One Step",
+    "slug": "one-step-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logoOneStep.png",
+    "icon": "./assets/images/logoOneStep.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/logoOneStep.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,12 +17,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logoOneStep.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.martinfrangul.onestepapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a05bc6e8-9535-4370-a0c6-6342a6fb173b"
+      }
     }
   }
 }

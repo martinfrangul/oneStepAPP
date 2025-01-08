@@ -8,8 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";

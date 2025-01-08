@@ -1,5 +1,4 @@
 import { useState, createContext } from "react";
-import PropTypes from "prop-types";
 import useAsyncStorageState from "../hooks/useAsyncStorageState";
 import { COLORS } from "../config/colors";
 const CounterContext = createContext();
@@ -44,8 +43,6 @@ const CounterContextProvider = ({ children }) => {
   );
 };
 
-CounterContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+
 
 export { CounterContext, CounterContextProvider };
