@@ -5,11 +5,11 @@ import {
   ImageBackground,
   SafeAreaView,
   View,
-  StatusBar,
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  Text
+  StatusBar,
+  Text,
 } from "react-native";
 import Navbar from "./components/Navbar";
 import { CounterContextProvider } from "./context/CounterContext";
@@ -21,14 +21,13 @@ import TaskPanel from "./components/tasks/TaskPanel";
 import { TasksDataProvider } from "./context/TasksData";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import ButtonsGorup from "./components/ButtonsGroup";
+import ButtonsGroup from "./components/ButtonsGroup";
 import { AlertContextProvider } from "./context/AlertContext";
 import { Provider as PaperProvider } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
 export default function App() {
-
   const [fontsLoaded] = useFonts({
     Raleway: require("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf"),
     RalewayMedium: require("./assets/fonts/Raleway/Raleway-Medium.ttf"),
@@ -37,43 +36,46 @@ export default function App() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
-  
 
-// Configuración de audio y preparación de la app
-useEffect(() => {
-  const prepareApp = async () => {
-    try {
-      if (fontsLoaded) {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          playsInSilentModeIOS: true,
-          shouldDuckAndroid: true,
-          playThroughEarpieceAndroid: false,
-        });
-        console.log("Modo de audio configurado correctamente.");
-        setIsAppReady(true);
-        await SplashScreen.hideAsync();
+  // Configuración de audio y preparación de la app
+  useEffect(() => {
+    const prepareApp = async () => {
+      try {
+        if (fontsLoaded) {
+          // Configuración de audio
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            playThroughEarpieceAndroid: false,
+          });
+          console.log("Modo de audio configurado correctamente.");
+
+          setIsAppReady(true); // Marca la app como lista
+          await SplashScreen.hideAsync(); // Oculta la pantalla splash
+        }
+      } catch (error) {
+        console.error("Error preparando la aplicación:", error);
       }
-    } catch (error) {
-      console.error("Error preparando la aplicación:", error);
+    };
+
+    if (fontsLoaded) {
+      prepareApp();
     }
-  };
+  }, [fontsLoaded]);
 
-  prepareApp();
-}, [fontsLoaded]);
-
-if (!isAppReady) {
-  return (
-    <View style={styles.loadingScreen}>
-      <Text>Cargando...</Text>
-    </View>
-  );
-}
+  if (!isAppReady) {
+    return (
+      <View style={styles.loadingScreen}>
+        <Text style={{ fontSize: 18, fontWeight: "bold" }}>Cargando...</Text>
+      </View>
+    );
+  }
 
   // Bloques de contenido
   const content = [
     { key: "counter", component: <Counter /> },
-    { key: "buttonsGropu", component: <ButtonsGorup /> },
+    { key: "buttonsGroup", component: <ButtonsGroup /> },
     { key: "taskManager", component: <TaskManager /> },
     { key: "taskPanel", component: <TaskPanel /> },
   ];
@@ -90,7 +92,11 @@ if (!isAppReady) {
               imageStyle={styles.backgroundImage}
             >
               <SafeAreaView style={styles.safeArea}>
-              <StatusBar />
+                <StatusBar
+                  translucent={false}
+                  backgroundColor="FFC1BD"
+                  barStyle="dark-content"
+                />
                 <KeyboardAvoidingView
                   style={{ flex: 1 }}
                   behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -133,7 +139,10 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    backgroundColor: "transparent", // Mantiene la transparencia
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
+
   listContent: {
     flexGrow: 1,
     paddingBottom: 20,
@@ -150,5 +159,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffffff",
   },
-  
 });
