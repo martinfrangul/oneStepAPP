@@ -15,7 +15,11 @@
     "ios": {
       "buildNumber": "1.0.0",
       "supportsTablet": true,
-      "bundleIdentifier": "com.martinfrangul.onestepapp"
+      "bundleIdentifier": "com.martinfrangul.onestepapp",
+      "infoPlist": {
+      "UIBackgroundModes": ["audio", "fetch"],
+      "NSUserNotificationUsageDescription": "This app needs access to show notifications."
+  }
     },
     "android": {
       "adaptiveIcon": {
