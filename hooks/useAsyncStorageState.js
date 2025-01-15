@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useAsyncStorageState = (key, defaultValue) => {
   const [state, setState] = useState(defaultValue);
-  const [isLoaded, setIsLoaded] = useState(false); // Para controlar la carga inicial
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Cargar el valor desde AsyncStorage al montar el componente
   useEffect(() => {

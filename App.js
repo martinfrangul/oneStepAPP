@@ -26,7 +26,21 @@ import { AlertContextProvider } from "./context/AlertContext";
 import { Provider as PaperProvider } from "react-native-paper";
 import "./config/notification-handler";
 import * as Notifications from "expo-notifications";
+import * as BackgroundFetch from "expo-background-fetch";
+import "./config/backgroundTask";
 
+const registerBackgroundTask = async () => {
+  try {
+    await BackgroundFetch.registerTaskAsync("background-pomodoro-task", {
+      minimumInterval: 60, // Tiempo mínimo entre ejecuciones (en segundos)
+      stopOnTerminate: false, // Continuar después de cerrar la app
+      startOnBoot: true, // Iniciar después de reiniciar el dispositivo
+    });
+    console.log("Tarea en background registrada.");
+  } catch (err) {
+    console.error("Error al registrar la tarea en background:", err);
+  }
+};
 
 SplashScreen.preventAutoHideAsync(); // Evita que la splash screen se oculte automáticamente
 
@@ -39,6 +53,10 @@ export default function App() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    registerBackgroundTask();
+  }, []);
 
   // Pedimos permisos y configuramos el canal de notificaciones
   useEffect(() => {

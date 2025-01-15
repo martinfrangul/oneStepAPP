@@ -57,7 +57,7 @@ const TaskPanel = () => {
 const styles = StyleSheet.create({
   gradientContainer: {
     flex: 1,
-    padding: 3, // Espacio para mostrar el borde degradado
+    padding: 3,
     borderRadius: 16,
     marginTop: 16,
   },

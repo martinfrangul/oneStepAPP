@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CounterContext } from "../context/CounterContext";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import CustomAlert from "./CustomAlert";
-// Quitar SoundAlert, ya no lo usamos
-// import SoundAlert from "./SoundAlert";
 import * as Notifications from "expo-notifications";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Counter = () => {
   const { mode, setMode, counterLap, setCounterLap, modes, initialCounterLap } =
@@ -45,24 +44,34 @@ const Counter = () => {
   // Función para programar la notificación local
   const schedulePomodoroNotification = async (secondsToCount) => {
   try {
-    if (secondsToCount > 0) {
-      const id = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "¡Pomodoro finalizado!",
-          body: "Ya pasaron los 25 minutos...",
-          sound: "default",
-        },
-        trigger: {
-          seconds: secondsToCount, // Se programa para el tiempo correcto
-        },
-      });
-      setNotificationId(id);
-      console.log("Notificación programada con ID:", id, "y segundos:", secondsToCount);
-    } else {
-      console.error("Tiempo restante no válido para programar notificación.");
+    // Cancelar notificación anterior si existe
+    if (notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId);
     }
+
+    // Guardar timestamp de finalización
+    const endTimestamp = Date.now() + (secondsToCount * 1000);
+    await AsyncStorage.setItem('pomodoroEndTime', endTimestamp.toString());
+
+    // Programar nueva notificación
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "¡Tiempo finalizado!",
+        body: `Tu sesión de ${modes[mode].name} ha terminado`,
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+        vibrate: [0, 250, 250, 250],
+      },
+      trigger: {
+        seconds: secondsToCount,
+        channelId: 'pomodoro-channel',
+      },
+    });
+
+    setNotificationId(id);
+    console.log('Notificación programada:', id);
   } catch (error) {
-    console.error("Error programando notificación:", error);
+    console.error('Error al programar notificación:', error);
   }
 };
 
@@ -103,6 +112,54 @@ const Counter = () => {
     };
   }, [playPause, started, endTime]);
 
+  useEffect(() => {
+  if (playPause && timeLeft > 0) {
+    const interval = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(interval);
+          setPlayPause(false);
+          schedulePomodoroNotification(1); // Notificación inmediata
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    // Programar notificación cuando se inicia el contador
+    schedulePomodoroNotification(timeLeft);
+
+    return () => {
+      clearInterval(interval);
+      if (notificationId) {
+        Notifications.cancelScheduledNotificationAsync(notificationId);
+      }
+    };
+  }
+}, [playPause, timeLeft]);
+
+// Recuperar estado al montar el componente
+useEffect(() => {
+  const restoreState = async () => {
+    try {
+      const endTimeStr = await AsyncStorage.getItem('pomodoroEndTime');
+      if (endTimeStr) {
+        const endTime = parseInt(endTimeStr);
+        const now = Date.now();
+        if (endTime > now) {
+          const remainingSeconds = Math.floor((endTime - now) / 1000);
+          setTimeLeft(remainingSeconds);
+          setPlayPause(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error al restaurar estado:', error);
+    }
+  };
+
+  restoreState();
+}, []);
+
   const onStartHandler = () => {
     if (!started) {
       setStarted(true);
@@ -121,7 +178,7 @@ const Counter = () => {
         content: {
           title: "¡Pomodoro finalizado!",
           body: "Ya pasaron los 25 minutos...",
-          sound: "default", // Usa default o configura un sonido personalizado
+          sound: "default",
         },
         trigger: null, // Dispara inmediatamente
       });
@@ -162,7 +219,6 @@ const Counter = () => {
     setPlayPause(false);
     setStarted(false);
 
-    // Cambia al siguiente modo, pero sin alertar con CustomAlert
     if (mode === "work") {
       if (counterLap > 1) {
         setCounterLap((prev) => prev - 1);
@@ -175,7 +231,6 @@ const Counter = () => {
       setMode("work");
     }
 
-    // No seteamos showAlert ni alertMessage
   };
 
   // Reset completo

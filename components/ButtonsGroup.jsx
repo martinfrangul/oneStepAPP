@@ -2,7 +2,6 @@ import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import CounterConfigButton from "./buttons/CounterConfigButton";
 import CompletedTasksButton from "./buttons/CompletedTasksButton";
-import SoundToggleButton from "./buttons/SoundToggleButton";
 import CounterConfig from "./CounterConfig";
 import CompletedTasks from "./CompletedTasks";
 
@@ -15,8 +14,6 @@ const ButtonsGorup = () => {
       <View style={styles.buttonsContainer}>
         <CompletedTasksButton onPress={() => setCompletedTasksVisible(true)} />
         <CounterConfigButton onPress={() => setModalVisible(true)} />
-        
-        <SoundToggleButton />
       </View>
       <CounterConfig
         visible={modalVisible}

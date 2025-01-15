@@ -53,7 +53,7 @@ const TaskManager = () => {
 const styles = StyleSheet.create({
   gradientContainer: {
     marginTop: 16,
-    padding: 8, // Espacio para mostrar el degradado alrededor del contenedor
+    padding: 8,
     borderRadius: 16,
     marginBottom: 16,
   },

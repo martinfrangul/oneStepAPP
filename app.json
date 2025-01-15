@@ -17,9 +17,12 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.martinfrangul.onestepapp",
       "infoPlist": {
-      "UIBackgroundModes": ["audio", "fetch"],
-      "NSUserNotificationUsageDescription": "This app needs access to show notifications."
-  }
+        "UIBackgroundModes": [
+          "audio",
+          "fetch"
+        ],
+        "NSUserNotificationUsageDescription": "This app needs access to show notifications."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,8 +39,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "a05bc6e8-9535-4370-a0c6-6342a6fb173b"
+        "projectId": "6f35e276-8c5b-4a1b-a3bb-fa8bb828bf11"
       }
-    }
+    },
+    "owner": "borisfindell"
   }
 }
